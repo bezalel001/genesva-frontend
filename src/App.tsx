@@ -4,11 +4,12 @@ import type { Gene } from './types/gene.types';
 import { loadGeneData } from './utils/csvParser';
 
 import { GeneTable } from './components/GeneTable';
+import { GeneDetailView } from './components/GeneDetailView';
 import './App.css';
 
 function App() {
   const [genes, setGenes] = useState<Gene[]>([]);
-  // const [selectedGene, setSelectedGene] = useState<Gene | null>(null);
+  const [selectedGene, setSelectedGene] = useState<Gene | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +38,10 @@ function App() {
       <Container fluid>
         <Grid>
           <Grid.Col span={12} lg={7}>
-            <GeneTable genes={genes} onRowSelect={() => null} />
+            <GeneTable genes={genes} onRowSelect={setSelectedGene} />
+          </Grid.Col>
+          <Grid.Col span={12} lg={5}>
+            <GeneDetailView gene={selectedGene} />
           </Grid.Col>
         </Grid>
       </Container>
