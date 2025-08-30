@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
+import { Container, Grid } from '@mantine/core';
 import type { Gene } from './types/gene.types';
 import { loadGeneData } from './utils/csvParser';
+
+import { GeneTable } from './components/GeneTable';
 import './App.css';
 
 function App() {
   const [genes, setGenes] = useState<Gene[]>([]);
+  // const [selectedGene, setSelectedGene] = useState<Gene | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,14 +34,13 @@ function App() {
   return (
     <>
       <h1>Genes Data</h1>
-      {genes.length > 0 &&
-        genes.map((gene, i) => (
-          <div key={`${gene.ensemble || 'unknown'}-${i}`}>
-            <p>{gene.geneSymbol}</p>
-            <p>{gene.name}</p>
-            <p>{gene.biotype}</p>
-          </div>
-        ))}
+      <Container fluid>
+        <Grid>
+          <Grid.Col span={12} lg={7}>
+            <GeneTable genes={genes} onRowSelect={() => null} />
+          </Grid.Col>
+        </Grid>
+      </Container>
     </>
   );
 }

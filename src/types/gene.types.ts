@@ -1,5 +1,5 @@
 export interface Gene {
-  ensemble: string;
+  ensembl: string;
   geneSymbol: string | null;
   name: string | null;
   biotype: string;

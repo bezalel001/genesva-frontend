@@ -22,7 +22,7 @@ export const parseGeneCSV = (csvContent: string): Gene[] => {
   });
 
   return (parsedData.data as CSVRow[]).map(row => ({
-    ensemble: row['Esembl'] || '',
+    ensembl: row['Esembl'] || '',
     geneSymbol: row['Gene symbol'] || null,
     name: row['Name'] || null,
     biotype: row['Biotype'] || '',
