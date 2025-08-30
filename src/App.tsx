@@ -1,33 +1,43 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { useState, useEffect } from 'react';
+import type { Gene } from './types/gene.types';
+import { loadGeneData } from './utils/csvParser';
 import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [genes, setGenes] = useState<Gene[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await loadGeneData();
+        setGenes(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unknown error occurred'
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount(count => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Genes Data</h1>
+      {genes.length > 0 &&
+        genes.map((gene, i) => (
+          <div key={`${gene.ensemble || 'unknown'}-${i}`}>
+            <p>{gene.geneSymbol}</p>
+            <p>{gene.name}</p>
+            <p>{gene.biotype}</p>
+          </div>
+        ))}
     </>
   );
 }
