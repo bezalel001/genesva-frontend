@@ -26,7 +26,7 @@ Before you begin, ensure you have the following installed on your machine:
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/genesva-frontend.git
+   git clone https://github.com/bezalel001/genesva-frontend.git
    cd genesva-frontend
    ```
 
@@ -80,7 +80,7 @@ genesva-frontend/
 
 ## 🛠️ Technology Stack
 
-- **React 18** - Modern React with hooks and functional components
+- **React 19** - Latest React with hooks and functional components
 - **TypeScript** - Type-safe JavaScript development
 - **Vite** - Fast build tool and development server
 - **Mantine** - Modern React components library
