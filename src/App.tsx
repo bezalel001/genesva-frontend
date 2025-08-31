@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Container, Grid } from '@mantine/core';
-
+import { Container, Grid, LoadingOverlay, Alert } from '@mantine/core';
+import { IconAlertCircle } from '@tabler/icons-react';
 import type { Gene } from './types/gene.types';
 import { loadGeneData } from './utils/csvParser';
 
@@ -31,8 +31,25 @@ function App() {
     loadData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) {
+    return <LoadingOverlay visible />;
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <Container>
+          <Alert
+            icon={<IconAlertCircle size="1rem" />}
+            title="Error"
+            color="red"
+          >
+            {error}
+          </Alert>
+        </Container>
+      </Layout>
+    );
+  }
 
   return (
     <>
