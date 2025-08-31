@@ -17,7 +17,7 @@ This app lets you browse through a dataset of ~50,000 human genes. You can searc
 
 ## Quick Start
 
-**Prerequisites:** Node.js 18+ and npm
+**Prerequisites:** Node.js 22+ and npm
 
 ```bash
 # Clone and install
