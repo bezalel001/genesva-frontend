@@ -3,6 +3,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
+  type MRT_RowSelectionState,
 } from 'mantine-react-table';
 import { Badge, Group, Text, ColorSwatch } from '@mantine/core';
 
@@ -53,12 +54,14 @@ const getBiotypeColor = (biotype: string): string => {
 };
 
 export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
-  const [selectedGene, setSelectedGene] = useState<Gene | null>(null);
+  // Use proper row selection state
+  const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
+  const [selectedGeneId, setSelectedGeneId] = useState<string | null>(null);
 
   const columns = useMemo<MRT_ColumnDef<Gene>[]>(
     () => [
       {
-        accessorKey: 'ensemble',
+        accessorKey: 'ensembl',
         header: 'Ensembl',
         size: 150,
       },
@@ -66,6 +69,7 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
         accessorKey: 'geneSymbol',
         header: 'Gene Symbol',
         size: 150,
+        Cell: ({ cell }) => cell.getValue() || '—',
       },
       {
         accessorKey: 'name',
@@ -73,7 +77,7 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
         size: 300,
         Cell: ({ cell }) => {
           const value = cell.getValue() as string | null;
-          if (!value) return '-';
+          if (!value) return '—';
 
           // Clean up the name by removing source information
           const cleanName = value.split('[Source:')[0].trim();
@@ -104,7 +108,7 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
         Cell: ({ cell }) => {
           const chr = String(cell.getValue());
           return (
-            <Group spacing="xs">
+            <Group gap="xs">
               <ColorSwatch color={CHROMOSOME_COLORS[chr] || '#666'} size={20} />
               <Text fw={500}>{chr}</Text>
             </Group>
@@ -118,39 +122,79 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
   const table = useMantineReactTable<Gene>({
     columns,
     data: genes,
+
+    // Enable single row selection
     enableRowSelection: true,
     enableMultiRowSelection: false,
+
+    // Use the row's ensembl ID as the unique identifier
+    getRowId: row => row.ensembl,
+
+    // Manage row selection state
+    state: {
+      rowSelection,
+    },
+
+    // Handle selection changes
     onRowSelectionChange: updater => {
       const newSelection =
-        typeof updater === 'function' ? updater({}) : updater;
+        typeof updater === 'function' ? updater(rowSelection) : updater;
 
-      const selectedId = Object.keys(newSelection)[0];
-      if (selectedId !== undefined) {
-        const gene = genes[parseInt(selectedId)];
-        setSelectedGene(gene);
-        onRowSelect(gene);
+      setRowSelection(newSelection);
+
+      // Get the selected gene
+      const selectedKeys = Object.keys(newSelection);
+      if (selectedKeys.length > 0) {
+        const selectedEnsembl = selectedKeys[0];
+        const gene = genes.find(g => g.ensembl === selectedEnsembl);
+        if (gene) {
+          setSelectedGeneId(selectedEnsembl);
+          onRowSelect(gene);
+        }
       } else {
-        setSelectedGene(null);
+        setSelectedGeneId(null);
         onRowSelect(null);
       }
     },
+
+    // Row click handler and styling
     mantineTableBodyRowProps: ({ row }) => ({
       onClick: () => {
-        const gene = row.original as Gene;
-        setSelectedGene(gene);
-        onRowSelect(gene);
+        // Toggle selection on row click
+        const newSelection: MRT_RowSelectionState = {};
+
+        if (rowSelection[row.id]) {
+          // Deselect if already selected
+          setRowSelection({});
+          setSelectedGeneId(null);
+          onRowSelect(null);
+        } else {
+          // Select this row
+          newSelection[row.id] = true;
+          setRowSelection(newSelection);
+          setSelectedGeneId(row.original.ensembl);
+          onRowSelect(row.original);
+        }
       },
-      sx: theme => ({
+      style: {
         cursor: 'pointer',
         backgroundColor:
-          selectedGene && selectedGene.ensembl === row.original.ensembl
-            ? theme.colors.blue[0]
+          selectedGeneId === row.original.ensembl
+            ? 'var(--mantine-color-blue-0)'
             : undefined,
+        transition: 'background-color 0.2s ease',
+      },
+      sx: theme => ({
         '&:hover': {
-          backgroundColor: theme.colors.gray[1],
+          backgroundColor:
+            selectedGeneId === row.original.ensembl
+              ? theme.colors.blue[1]
+              : theme.colors.gray[0],
         },
       }),
     }),
+
+    // Table configuration
     initialState: {
       pagination: {
         pageSize: 20,
@@ -158,9 +202,27 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
       },
       sorting: [{ id: 'geneSymbol', desc: false }],
     },
+
+    // Features
     enableGlobalFilter: true,
     enableStickyHeader: true,
-    mantineTableContainerProps: { sx: { maxHeight: '500px' } },
+    enablePagination: true,
+
+    // Container props
+    mantineTableContainerProps: {
+      sx: {
+        maxHeight: '600px',
+        '& thead tr': {
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        },
+      },
+    },
+
+    // Selection checkbox styling
+    mantineSelectCheckboxProps: {
+      color: 'blue',
+      size: 'sm',
+    },
   });
 
   return <MantineReactTable table={table} />;

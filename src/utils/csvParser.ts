@@ -3,7 +3,7 @@ import Papa from 'papaparse';
 import type { Gene } from '../types/gene.types';
 
 interface CSVRow {
-  Esembl?: string;
+  Ensembl?: string;
   'Gene symbol'?: string;
   Name?: string;
   Biotype?: string;
@@ -22,7 +22,7 @@ export const parseGeneCSV = (csvContent: string): Gene[] => {
   });
 
   return (parsedData.data as CSVRow[]).map(row => ({
-    ensembl: row['Esembl'] || '',
+    ensembl: row['Ensembl'] || '',
     geneSymbol: row['Gene symbol'] || null,
     name: row['Name'] || null,
     biotype: row['Biotype'] || '',

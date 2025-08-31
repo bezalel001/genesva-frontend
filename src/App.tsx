@@ -6,6 +6,7 @@ import { loadGeneData } from './utils/csvParser';
 import { GeneTable } from './components/GeneTable';
 import { GeneDetailView } from './components/GeneDetailView';
 import './App.css';
+import { Layout } from './components/Layouts';
 
 function App() {
   const [genes, setGenes] = useState<Gene[]>([]);
@@ -35,16 +36,18 @@ function App() {
   return (
     <>
       <h1>Genes Data</h1>
-      <Container fluid>
-        <Grid>
-          <Grid.Col span={12} lg={7}>
-            <GeneTable genes={genes} onRowSelect={setSelectedGene} />
-          </Grid.Col>
-          <Grid.Col span={12} lg={5}>
-            <GeneDetailView gene={selectedGene} />
-          </Grid.Col>
-        </Grid>
-      </Container>
+      <Layout>
+        <Container fluid>
+          <Grid>
+            <Grid.Col span={12} lg={7}>
+              <GeneTable genes={genes} onRowSelect={setSelectedGene} />
+            </Grid.Col>
+            <Grid.Col span={12} lg={5}>
+              <GeneDetailView gene={selectedGene} allGenes={genes} />
+            </Grid.Col>
+          </Grid>
+        </Container>
+      </Layout>
     </>
   );
 }
