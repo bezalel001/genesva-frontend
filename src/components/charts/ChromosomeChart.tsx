@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Card } from '@mantine/core';
+import { Card, useMantineTheme } from '@mantine/core';
 import ReactECharts from 'echarts-for-react';
 import type { Gene } from '../../types/gene.types';
 
@@ -9,7 +9,13 @@ interface ChromosomeChartProps {
 }
 
 export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
-  const option = useMemo(() => {
+  // Use Mantine theme to detect dark mode
+  const theme = useMantineTheme();
+  const isDarkMode = theme.colorScheme === 'dark';
+  // Define colors based on theme
+  const textColor = isDarkMode ? theme.colors.gray[2] : theme.colors.dark[8];
+
+  const chartData = useMemo(() => {
     // Count genes per chromosome
     const chromCount: Record<string, number> = {};
     allGenes.forEach(g => {
@@ -18,7 +24,7 @@ export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
     });
 
     // Sort chromosomes naturally (1-22, X, Y, MT)
-    const sortedData = Object.entries(chromCount)
+    return Object.entries(chromCount)
       .sort((a, b) => {
         const aNum = parseInt(a[0]);
         const bNum = parseInt(b[0]);
@@ -28,12 +34,14 @@ export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
         return a[0].localeCompare(b[0]);
       })
       .slice(0, 15); // Show top 15 chromosomes
+  }, [allGenes]);
 
+  const option = useMemo(() => {
     return {
       title: {
         text: 'Genes per Chromosome',
         left: 'center',
-        textStyle: { fontSize: 14, fontWeight: 'normal' },
+        textStyle: { fontSize: 14, fontWeight: 'bold', color: textColor },
       },
       tooltip: {
         trigger: 'axis',
@@ -41,7 +49,7 @@ export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
       },
       xAxis: {
         type: 'category',
-        data: sortedData.map(([chr]) => chr),
+        data: chartData.map(([chr]) => chr),
         axisLabel: {
           rotate: 45,
           fontSize: 10,
@@ -59,7 +67,7 @@ export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
       series: [
         {
           type: 'bar',
-          data: sortedData.map(([chr, count]) => ({
+          data: chartData.map(([chr, count]) => ({
             value: count,
             itemStyle: {
               color: chr === String(gene.chromosome) ? '#ff6b6b' : '#73c0de',
@@ -77,7 +85,7 @@ export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
         top: '15%',
       },
     };
-  }, [gene, allGenes]);
+  }, [gene.chromosome, textColor, chartData]);
 
   return (
     <Card shadow="sm" padding="sm" radius="md" withBorder>
@@ -85,6 +93,7 @@ export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
         option={option}
         style={{ height: '280px', width: '100%' }}
         opts={{ renderer: 'canvas' }}
+        theme={isDarkMode ? 'dark' : undefined}
       />
     </Card>
   );

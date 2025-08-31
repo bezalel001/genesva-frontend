@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Card } from '@mantine/core';
+import { Card, useMantineTheme } from '@mantine/core';
 import ReactECharts from 'echarts-for-react';
 import type { Gene } from '../../types/gene.types';
 
@@ -9,7 +9,13 @@ interface BiotypeChartProps {
 }
 
 export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
-  const option = useMemo(() => {
+  // Use Mantine theme to detect dark mode
+  const theme = useMantineTheme();
+  const isDarkMode = theme.colorScheme === 'dark';
+  // Define colors based on theme
+  const textColor = isDarkMode ? theme.colors.gray[2] : theme.colors.dark[8];
+
+  const chartData = useMemo(() => {
     // Count biotypes on the same chromosome
     const chromosomeGenes = allGenes.filter(
       g => g.chromosome === gene.chromosome
@@ -22,7 +28,7 @@ export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
     });
 
     // Convert to array, sort, and take top 6
-    const data = Object.entries(biotypeCount)
+    return Object.entries(biotypeCount)
       .map(([name, value]) => ({
         name,
         value,
@@ -32,12 +38,14 @@ export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
       }))
       .sort((a, b) => b.value - a.value)
       .slice(0, 6);
+  }, [gene, allGenes]);
 
+  const option = useMemo(() => {
     return {
       title: {
         text: `Gene Types on Chr ${gene.chromosome}`,
         left: 'center',
-        textStyle: { fontSize: 14, fontWeight: 'normal' },
+        textStyle: { fontSize: 14, fontWeight: 'bold', color: textColor },
       },
       tooltip: {
         trigger: 'item',
@@ -48,7 +56,7 @@ export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
           type: 'pie',
           radius: ['40%', '70%'],
           center: ['50%', '60%'],
-          data: data,
+          data: chartData,
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -63,7 +71,7 @@ export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
       ],
       color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
     };
-  }, [gene, allGenes]);
+  }, [gene.chromosome, textColor, chartData]);
 
   return (
     <Card shadow="sm" padding="sm" radius="md" withBorder>
@@ -71,6 +79,7 @@ export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
         option={option}
         style={{ height: '280px', width: '100%' }}
         opts={{ renderer: 'canvas' }}
+        theme={isDarkMode ? 'dark' : undefined}
       />
     </Card>
   );
