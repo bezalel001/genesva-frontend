@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, Grid } from '@mantine/core';
+
 import type { Gene } from './types/gene.types';
 import { loadGeneData } from './utils/csvParser';
 
@@ -36,6 +37,7 @@ function App() {
   return (
     <>
       <h1>Genes Data</h1>
+
       <Layout>
         <Container fluid>
           <Grid>
