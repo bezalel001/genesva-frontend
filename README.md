@@ -11,14 +11,21 @@ A modern React application for visualizing and exploring human gene data using M
 - **Real-time Statistics**: Dynamic calculations of gene properties and chromosome statistics
 - **Visual Charts**: Interactive charts showing gene density and distribution patterns
 
+## Future Enhancements
+
+- Dynamic column addition from external APIs
+- Gosling.js genomic visualization
+- Gene expression analysis
+- Differential expression analysis
+
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 Before you begin, ensure you have the following installed on your machine:
 
-- **Node.js** (version 18.0 or higher)
-- **npm** (version 8.0 or higher) or **yarn** (version 1.22 or higher)
+- **Node.js** (version 22.19.0 or higher)
+- **npm** (version 10.9.3 or higher)
 - **Git** (for cloning the repository)
 
 ### Installation
@@ -34,16 +41,12 @@ Before you begin, ensure you have the following installed on your machine:
 
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
 3. **Start the development server**
 
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
 4. **Open your browser**
@@ -54,11 +57,11 @@ Before you begin, ensure you have the following installed on your machine:
 ```
 genesva-frontend/
 ├── public/
-│   └── vite.svg                 # Vite logo
+│   └── vite.svg
 ├── src/
 │   ├── components/
 │   │   ├── charts/              # Chart components
-│   │   │   └── ChromosomeDensityChart.tsx
+│   │   │   └── ChromosomeChart.tsx
 │   │   ├── GeneDetailView.tsx   # Gene detail panel
 │   │   ├── GeneTable.tsx        # Main data table
 │   │   └── Layouts.tsx          # App layout wrapper
@@ -116,15 +119,9 @@ interface Gene {
 ### GeneDetailView
 
 - Shows detailed information about selected genes
-- Calculates real-time statistics (gene length, position percentile, etc.)
+- Calculates real-time statistics (gene length, position etc.)
 - Displays interactive charts and visualizations
-- Provides external links to gene databases
-
-### ChromosomeDensityChart
-
-- Visualizes gene density across chromosomes
-- Interactive scatter plot with tooltips
-- Color-coded by chromosome and gene type
+- Provides external links to gene databases (Ensembl, GeneCards, NCBI)
 
 ## 🔧 Available Scripts
 
@@ -210,7 +207,7 @@ npm run dev -- --port 3000
 node --version
 
 # Use nvm to switch versions
-nvm use 18
+nvm use 22
 ```
 
 **3. Dependencies issues**
