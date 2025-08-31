@@ -1,263 +1,213 @@
-# Gene Table Viewer
+# Gene Data Viewer
 
-A modern React application for visualizing and exploring human gene data using Mantine UI components and interactive charts. This project was built as part of the datavisyn coding challenge.
+A React app built with TypeScript for viewing and exploring human gene data. Created for the datavisyn coding challenge.
 
-## 🧬 Features
+![React](https://img.shields.io/badge/React-19.1-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue) ![Vite](https://img.shields.io/badge/Vite-7.1-purple)
 
-- **Interactive Gene Table**: Browse through human gene data with sorting, filtering, and pagination
-- **Gene Detail View**: Comprehensive information about selected genes including statistics and visualizations
-- **Dark/Light Theme**: Toggle between dark and light color schemes
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Real-time Statistics**: Dynamic calculations of gene properties and chromosome statistics
-- **Visual Charts**: Interactive charts showing gene density and distribution patterns
+## What does it do?
 
-## Future Enhancements
+This app lets you browse through a dataset of ~50,000 human genes. You can search, filter, and click on genes to see detailed information and charts.
 
-- Dynamic column addition from external APIs
-- Gosling.js genomic visualization
-- Gene expression analysis
-- Differential expression analysis
+**Main features:**
 
-## 🚀 Quick Start
+- 📊 **Data table** - Search, sort, and filter genes
+- 📈 **Interactive charts** - Visual breakdown of gene types and chromosomes
+- 🎨 **Dark/Light themes** - Toggle between themes
+- 📱 **Mobile responsive** - Works on all screen sizes
 
-### Prerequisites
+## Quick Start
 
-Before you begin, ensure you have the following installed on your machine:
-
-- **Node.js** (version 22.19.0 or higher)
-- **npm** (version 10.9.3 or higher)
-- **Git** (for cloning the repository)
-
-### Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/bezalel001/genesva-frontend.git
-   cd genesva-frontend
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-
-   ```bash
-   npm run dev
-   ```
-
-4. **Open your browser**
-   Navigate to `http://localhost:5173` to view the application.
-
-## 📁 Project Structure
-
-```
-genesva-frontend/
-├── public/
-│   └── vite.svg
-├── src/
-│   ├── components/
-│   │   ├── charts/              # Chart components
-│   │   │   └── ChromosomeChart.tsx
-│   │   ├── GeneDetailView.tsx   # Gene detail panel
-│   │   ├── GeneTable.tsx        # Main data table
-│   │   └── Layouts.tsx          # App layout wrapper
-│   ├── data/
-│   │   └── genes_human.csv      # Gene dataset
-│   ├── types/
-│   │   └── gene.types.ts        # TypeScript type definitions
-│   ├── utils/
-│   │   └── csvParser.ts         # CSV parsing utilities
-│   ├── App.tsx                  # Main application component
-│   ├── App.css                  # Global styles
-│   ├── main.tsx                 # Application entry point
-│   └── ThemeProvider.tsx        # Theme configuration
-├── package.json                 # Dependencies and scripts
-├── tsconfig.json               # TypeScript configuration
-├── vite.config.ts              # Vite build configuration
-└── README.md                   # This file
-```
-
-## 🛠️ Technology Stack
-
-- **React 19** - Latest React with hooks and functional components
-- **TypeScript** - Type-safe JavaScript development
-- **Vite** - Fast build tool and development server
-- **Mantine** - Modern React components library
-- **ECharts** - Interactive charting library
-- **Papa Parse** - CSV parsing library
-- **Axios** - HTTP client for data fetching
-
-## 📊 Data Structure
-
-The application works with human gene data stored in CSV format. Each gene record contains:
-
-```typescript
-interface Gene {
-  ensembl: string; // Ensembl gene ID
-  geneSymbol: string | null; // Gene symbol (e.g., "BRCA1")
-  name: string | null; // Full gene name
-  biotype: string; // Gene type (e.g., "Protein Coding")
-  chromosome: string | number; // Chromosome number
-  seqRegionStart: number; // Start position on chromosome
-  seqRegionEnd: number; // End position on chromosome
-}
-```
-
-## 🎨 Key Components
-
-### GeneTable
-
-- Displays gene data in a sortable, filterable table
-- Supports row selection with radio buttons
-- Includes custom cell renderers for different data types
-- Responsive design with sticky headers
-
-### GeneDetailView
-
-- Shows detailed information about selected genes
-- Calculates real-time statistics (gene length, position etc.)
-- Displays interactive charts and visualizations
-- Provides external links to gene databases (Ensembl, GeneCards, NCBI)
-
-## 🔧 Available Scripts
+**Prerequisites:** Node.js 18+ and npm
 
 ```bash
-# Development
+# Clone and install
+git clone <repo-url>
+cd genesva-frontend
+npm install
+
+# Start development server
+npm run dev
+```
+
+Open http://localhost:5173 - you should see the gene data table.
+
+## What's inside?
+
+### Tech Stack
+
+- **React 19** with hooks (no class components)
+- **TypeScript** for type safety
+- **Vite** for fast development and builds
+- **Mantine** for UI components
+- **ECharts** for interactive charts
+- **Papa Parse** for CSV data processing
+
+### Project Structure
+
+```
+src/
+├── components/           # React components
+│   ├── charts/          # Chart components
+│   ├── GeneTable.tsx    # Main data table
+│   ├── GeneDetailView.tsx # Gene info panel
+│   └── Layouts.tsx      # App layout
+├── types/               # TypeScript types
+├── utils/               # Helper functions
+├── data/                # CSV data files
+└── App.tsx              # Main app component
+```
+
+## How it works
+
+### Data Flow
+
+1. App loads CSV file with gene data (~50K records)
+2. Data gets parsed and stored in React state
+3. User can search/filter in the table
+4. Clicking a row shows details and updates charts
+5. Charts show gene type distribution and chromosome data
+
+### Key Components
+
+**App.tsx** - Main component that:
+
+- Loads gene data from CSV
+- Manages selected gene state
+- Handles loading/error states
+
+**GeneTable.tsx** - Data table that:
+
+- Displays all genes with sorting/filtering
+- Has color-coded columns (chromosomes, gene types)
+- Emits selection events when rows are clicked
+
+**GeneDetailView.tsx** - Detail panel that:
+
+- Shows info about selected gene
+- Displays two interactive charts
+- Links to external databases
+
+**Charts** - Two chart components:
+
+- **BiotypeChart** - Pie chart of gene types on selected chromosome
+- **ChromosomeChart** - Bar chart showing genes per chromosome
+
+## Performance Notes
+
+The app handles 50K+ records smoothly by:
+
+- Using `useMemo` for expensive calculations
+- Separating data processing from UI updates
+- Memoizing chart data to avoid recalculation on theme changes
+
+Example optimization in charts:
+
+```typescript
+// Heavy data processing - only runs when data changes
+const chartData = useMemo(() => {
+  return processGeneData(allGenes);
+}, [allGenes]);
+
+// Light styling - only runs when theme changes
+const chartOptions = useMemo(() => {
+  return createChartOptions(chartData, theme);
+}, [chartData, theme]);
+```
+
+## Available Scripts
+
+```bash
 npm run dev          # Start development server
 npm run build        # Build for production
 npm run preview      # Preview production build
 
-# Code Quality
 npm run lint         # Run ESLint
-npm run lint:fix     # Fix ESLint errors
-npm run type-check   # Run TypeScript type checking
-
-# Testing (if configured)
-npm run test         # Run tests
-npm run test:coverage # Run tests with coverage
+npm run lint:fix     # Fix ESLint issues
+npm run format       # Format code with Prettier
 ```
 
-## 🌐 Browser Support
+## Code Quality
 
-This application supports all modern browsers:
+The project uses:
+
+- **ESLint** for code linting
+- **Prettier** for code formatting
+- **Husky** for git hooks (auto-format on commit)
+- **TypeScript strict mode** for type safety
+
+## Data Structure
+
+Each gene has this structure:
+
+```typescript
+interface Gene {
+  ensembl: string; // Gene ID (e.g., "ENSG00000012048")
+  geneSymbol: string | null; // Gene name (e.g., "BRCA1")
+  name: string | null; // Full description
+  biotype: string; // Gene type (e.g., "Protein Coding")
+  chromosome: string | number; // Chromosome (1-22, X, Y, MT)
+  seqRegionStart: number; // Start position
+  seqRegionEnd: number; // End position
+}
+```
+
+## Browser Support
+
+Works in all modern browsers:
 
 - Chrome 90+
 - Firefox 88+
 - Safari 14+
 - Edge 90+
 
-## 📱 Responsive Design
+## Responsive Design
 
-The application is fully responsive and works on:
+- **Desktop (1200px+)**: Side-by-side table and detail view
+- **Tablet (768px-1199px)**: Stacked layout
+- **Mobile (320px-767px)**: Single column, touch-optimized
 
-- **Desktop** (1200px+): Full layout with side-by-side table and detail view
-- **Tablet** (768px - 1199px): Stacked layout with full-width components
-- **Mobile** (320px - 767px): Optimized for touch interaction
+## Common Issues
 
-## 🎯 Usage Guide
-
-### Basic Navigation
-
-1. **Browse Genes**: Use the table to scroll through gene data
-2. **Search**: Use the global filter to search across all columns
-3. **Sort**: Click column headers to sort data
-4. **Select**: Click on any row to view detailed gene information
-5. **Theme**: Use the sun/moon icon in the header to toggle themes
-
-### Gene Details
-
-When you select a gene, the detail panel shows:
-
-- **Basic Information**: Gene symbol, name, and identifiers
-- **Genomic Location**: Chromosome, coordinates, and length
-- **Statistics**: Position percentile, gene density, and comparisons
-- **Visualizations**: Interactive charts showing gene context
-
-## 🏗️ Build for Production (Local)
-
-If you want to build the project for production locally:
+**Port already in use:**
 
 ```bash
-npm run build
-```
-
-This creates a `dist` folder with optimized production files that you can serve locally or use for testing.
-
-## 🔍 Troubleshooting
-
-### Common Issues
-
-**1. Port already in use**
-
-```bash
-# Kill process on port 5173
 npx kill-port 5173
-# or use a different port
-npm run dev -- --port 3000
 ```
 
-**2. Node version issues**
+**Dependencies issues:**
 
 ```bash
-# Check Node version
-node --version
-
-# Use nvm to switch versions
-nvm use 22
-```
-
-**3. Dependencies issues**
-
-```bash
-# Clear cache and reinstall
 rm -rf node_modules package-lock.json
 npm install
 ```
 
-**4. TypeScript errors**
+**TypeScript errors:**
 
 ```bash
-# Run type checking
-npm run type-check
-
-# Fix linting issues
 npm run lint:fix
 ```
 
-## 🤝 Development
+## What's Next?
 
-### Local Development Guidelines
+Potential improvements:
 
-- Follow TypeScript best practices
-- Use meaningful commit messages
-- Ensure all linting passes (`npm run lint`)
-- Update documentation as needed
-- Test changes locally before committing
+- Add unit tests (Jest + React Testing Library)
+- Implement virtual scrolling for better performance
+- Add more chart types (scatter plots, heatmaps)
+- Export functionality (PDF, CSV)
+- Gene comparison features
+- Dynamic column addition from external APIs
+- Gosling.js genomic visualization
+- Gene expression analysis
+- Differential expression analysis
 
-## 📄 License
+## Contributing
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **datavisyn** for providing the coding challenge
-- **Mantine** team for the excellent UI components
-- **ECharts** for the powerful charting capabilities
-- **React** community for the amazing ecosystem
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [troubleshooting section](#-troubleshooting)
-2. Review the code and documentation
-3. Ensure all dependencies are properly installed
-4. Check that you're using the correct Node.js version
+1. Follow the existing code style
+2. Run `npm run lint` before committing
+3. Use conventional commit messages
+4. Update documentation for new features
 
 ---
 
-**Happy coding! 🧬✨**
+**Built with modern React patterns and TypeScript for type safety and better developer experience.**
