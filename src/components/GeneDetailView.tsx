@@ -7,298 +7,117 @@ import {
   Badge,
   Paper,
   SimpleGrid,
-  Divider,
-  List,
-  ThemeIcon,
 } from '@mantine/core';
-import {
-  IconDna,
-  IconMapPin,
-  IconCategory,
-  IconId,
-  IconChartBar,
-} from '@tabler/icons-react';
+import { IconDna2 } from '@tabler/icons-react';
 import type { Gene } from '../types/gene.types';
+import { BiotypeChart } from './charts/BiotypeChart';
+import { ChromosomeChart } from './charts/ChromosomeChart';
+import './GeneDetailView.css';
 
 interface GeneDetailViewProps {
   gene: Gene | null;
+  allGenes: Gene[];
 }
 
-export function GeneDetailView({ gene }: GeneDetailViewProps) {
+export function GeneDetailView({ gene, allGenes }: GeneDetailViewProps) {
+  // Show empty state if no gene selected
   if (!gene) {
     return (
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Stack align="center" justify="center" h={400}>
-          <IconDna size={48} color="gray" />
-          <Text c="dimmed" ta="center">
-            Select a gene from the table to view detailed information
+      <Card
+        shadow="sm"
+        padding="xl"
+        radius="md"
+        withBorder
+        className="empty-state"
+      >
+        <Stack align="center" justify="center" style={{ minHeight: '400px' }}>
+          <IconDna2 size={48} stroke={1.5} color="gray" />
+          <Title order={3} c="dimmed">
+            No Gene Selected
+          </Title>
+          <Text c="dimmed" size="sm">
+            Click on any row in the table to view details
           </Text>
         </Stack>
       </Card>
     );
   }
 
-  // Calculate gene length
+  // Calculate basic gene information
   const geneLength = gene.seqRegionEnd - gene.seqRegionStart;
-
-  // Format large numbers with commas
-  const formatNumber = (num: number) => num.toLocaleString();
-
-  // Clean gene name (remove source annotations)
-  const cleanName = gene.name ? gene.name.split('[Source:')[0].trim() : null;
-
-  // Determine biotype category
-  const getBiotypeCategory = (biotype: string) => {
-    const categories: Record<string, string> = {
-      'Protein Coding': 'Codes for proteins',
-      'Linc R N A': 'Long intergenic non-coding RNA',
-      'Processed Pseudogene': 'Pseudogene (processed)',
-      'Unprocessed Pseudogene': 'Pseudogene (unprocessed)',
-      'Processed Transcript': 'Processed transcript',
-    };
-    return categories[biotype] || biotype;
-  };
+  const geneLengthKb = (geneLength / 1000).toFixed(1);
+  const position = `${gene.chromosome}:${gene.seqRegionStart.toLocaleString()}-${gene.seqRegionEnd.toLocaleString()}`;
 
   return (
-    <Stack>
-      {/* Main Gene Information Card */}
+    <Stack spacing="md">
+      {/* Gene Information Card */}
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Stack spacing="md">
-          {/* Header with Gene Symbol/Name */}
-          <div>
-            <Group spacing="xs" mb={4}>
-              <IconDna size={24} />
+          {/* Header with gene name and biotype */}
+          <Group align="space-between">
+            <div>
               <Title order={3}>{gene.geneSymbol || gene.ensembl}</Title>
-            </Group>
-
-            {cleanName && gene.geneSymbol && (
-              <Text size="sm" c="dimmed" mt={4}>
-                {cleanName}
+              <Text c="dimmed" size="sm">
+                {gene.ensembl}
               </Text>
-            )}
-          </div>
-
-          <Divider />
-
-          {/* Gene Identifiers */}
-          <div>
-            <Group spacing="xs" mb="xs">
-              <ThemeIcon size="sm" variant="light" color="blue">
-                <IconId size={14} />
-              </ThemeIcon>
-              <Text size="sm" fw={500}>
-                Identifiers
-              </Text>
-            </Group>
-            <Paper p="xs" withBorder bg="gray.0">
-              <SimpleGrid cols={2} spacing="xs">
-                <div>
-                  <Text size="xs" c="dimmed">
-                    Ensembl ID
-                  </Text>
-                  <Text size="sm" fw={500} style={{ fontFamily: 'monospace' }}>
-                    {gene.ensembl}
-                  </Text>
-                </div>
-                <div>
-                  <Text size="xs" c="dimmed">
-                    Gene Symbol
-                  </Text>
-                  <Text size="sm" fw={500}>
-                    {gene.geneSymbol || 'N/A'}
-                  </Text>
-                </div>
-              </SimpleGrid>
-            </Paper>
-          </div>
-
-          {/* Genomic Location */}
-          <div>
-            <Group spacing="xs" mb="xs">
-              <ThemeIcon size="sm" variant="light" color="green">
-                <IconMapPin size={14} />
-              </ThemeIcon>
-              <Text size="sm" fw={500}>
-                Genomic Location
-              </Text>
-            </Group>
-            <Paper p="xs" withBorder bg="gray.0">
-              <SimpleGrid cols={2} spacing="xs">
-                <div>
-                  <Text size="xs" c="dimmed">
-                    Chromosome
-                  </Text>
-                  <Badge size="lg" variant="filled" color="green">
-                    Chr {gene.chromosome}
-                  </Badge>
-                </div>
-                <div>
-                  <Text size="xs" c="dimmed">
-                    Coordinates
-                  </Text>
-                  <Text size="sm" fw={500} style={{ fontFamily: 'monospace' }}>
-                    {formatNumber(gene.seqRegionStart)} -{' '}
-                    {formatNumber(gene.seqRegionEnd)}
-                  </Text>
-                </div>
-                <div>
-                  <Text size="xs" c="dimmed">
-                    Length
-                  </Text>
-                  <Text size="sm" fw={500}>
-                    {formatNumber(geneLength)} bp
-                  </Text>
-                </div>
-                <div>
-                  <Text size="xs" c="dimmed">
-                    Size
-                  </Text>
-                  <Text size="sm" fw={500}>
-                    {geneLength > 1000000
-                      ? `${(geneLength / 1000000).toFixed(2)} Mb`
-                      : geneLength > 1000
-                        ? `${(geneLength / 1000).toFixed(1)} kb`
-                        : `${geneLength} bp`}
-                  </Text>
-                </div>
-              </SimpleGrid>
-            </Paper>
-          </div>
-
-          {/* Gene Type Information */}
-          <div>
-            <Group spacing="xs" mb="xs">
-              <ThemeIcon size="sm" variant="light" color="purple">
-                <IconCategory size={14} />
-              </ThemeIcon>
-              <Text size="sm" fw={500}>
-                Gene Type
-              </Text>
-            </Group>
-            <Paper p="xs" withBorder bg="gray.0">
-              <Group spacing="md">
-                <Badge size="lg" variant="light" color="purple">
-                  {gene.biotype}
-                </Badge>
-                <Text size="sm" c="dimmed">
-                  {getBiotypeCategory(gene.biotype)}
-                </Text>
-              </Group>
-            </Paper>
-          </div>
-        </Stack>
-      </Card>
-
-      {/* Additional Information Card */}
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Stack spacing="md">
-          <Group spacing="xs">
-            <ThemeIcon size="sm" variant="light" color="orange">
-              <IconChartBar size={14} />
-            </ThemeIcon>
-            <Text size="sm" fw={500}>
-              Gene Statistics
-            </Text>
+            </div>
+            <Badge size="lg" color="blue" variant="light">
+              {gene.biotype}
+            </Badge>
           </Group>
 
-          <SimpleGrid cols={3} spacing="md">
-            <Paper p="sm" withBorder>
-              <Text size="xs" c="dimmed" mb={4}>
-                Region Span
+          {/* Full gene name if available */}
+          {gene.name && (
+            <Paper p="sm" withBorder radius="sm" className="gene-name-panel">
+              <Text size="xs" c="dimmed" fw={600}>
+                Full Name
               </Text>
-              <Text size="lg" fw={600}>
-                {(geneLength / 1000).toFixed(1)}k
-              </Text>
-              <Text size="xs" c="dimmed">
-                base pairs
-              </Text>
+              <Text size="sm">{gene.name.split('[Source:')[0].trim()}</Text>
             </Paper>
+          )}
 
-            <Paper p="sm" withBorder>
-              <Text size="xs" c="dimmed" mb={4}>
+          {/* Gene statistics */}
+          <SimpleGrid cols={3} spacing="md">
+            <Paper p="md" withBorder radius="md" className="stat-card">
+              <Text size="xs" c="dimmed">
                 Chromosome
               </Text>
-              <Text size="lg" fw={600}>
-                {gene.chromosome}
-              </Text>
-              <Text size="xs" c="dimmed">
-                {gene.chromosome === 'X' || gene.chromosome === 'Y'
-                  ? 'Sex chromosome'
-                  : 'Autosome'}
+              <Text size="xl" fw={600}>
+                Chr {gene.chromosome}
               </Text>
             </Paper>
 
-            <Paper p="sm" withBorder>
-              <Text size="xs" c="dimmed" mb={4}>
-                Type
+            <Paper p="md" withBorder radius="md" className="stat-card">
+              <Text size="xs" c="dimmed">
+                Length
               </Text>
-              <Text size="lg" fw={600}>
-                {gene.biotype.includes('Protein') ? 'Coding' : 'Non-coding'}
+              <Text size="xl" fw={600}>
+                {geneLengthKb} kb
               </Text>
               <Text size="xs" c="dimmed">
-                gene type
+                {geneLength.toLocaleString()} bp
+              </Text>
+            </Paper>
+
+            <Paper p="md" withBorder radius="md" className="stat-card">
+              <Text size="xs" c="dimmed">
+                Position
+              </Text>
+              <Text size="xs" style={{ fontFamily: 'monospace' }}>
+                {position}
               </Text>
             </Paper>
           </SimpleGrid>
-
-          {/* Quick Facts */}
-          <div>
-            <Text size="sm" fw={500} mb="xs">
-              Quick Facts
-            </Text>
-            <List size="sm" spacing="xs">
-              <List.Item>
-                <strong>Location:</strong> Chromosome {gene.chromosome},
-                positions {formatNumber(gene.seqRegionStart)} to{' '}
-                {formatNumber(gene.seqRegionEnd)}
-              </List.Item>
-              <List.Item>
-                <strong>Length:</strong> {formatNumber(geneLength)} base pairs (
-                {(geneLength / 1000).toFixed(1)} kb)
-              </List.Item>
-              <List.Item>
-                <strong>Type:</strong> {getBiotypeCategory(gene.biotype)}
-              </List.Item>
-              {gene.geneSymbol && (
-                <List.Item>
-                  <strong>Symbol:</strong> {gene.geneSymbol}
-                </List.Item>
-              )}
-            </List>
-          </div>
-
-          {/* External Links (optional - you can add these) */}
-          <div>
-            <Text size="sm" fw={500} mb="xs">
-              External Resources
-            </Text>
-            <Group spacing="xs">
-              <Badge
-                component="a"
-                href={`https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=${gene.ensembl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="outline"
-                style={{ cursor: 'pointer' }}
-              >
-                View in Ensembl
-              </Badge>
-              {gene.geneSymbol && (
-                <Badge
-                  component="a"
-                  href={`https://www.genecards.org/cgi-bin/carddisp.pl?gene=${gene.geneSymbol}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="outline"
-                  style={{ cursor: 'pointer' }}
-                >
-                  View in GeneCards
-                </Badge>
-              )}
-            </Group>
-          </div>
         </Stack>
       </Card>
+
+      {/* 1x2 Grid of Visualizations */}
+      <SimpleGrid cols={2} spacing="md">
+        <BiotypeChart gene={gene} allGenes={allGenes} />
+        <ChromosomeChart gene={gene} allGenes={allGenes} />
+      </SimpleGrid>
     </Stack>
   );
 }
+
+export default GeneDetailView;

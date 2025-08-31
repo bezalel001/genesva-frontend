@@ -1,0 +1,24 @@
+.empty-state {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.gene-name-panel {
+  background-color: #f8f9fa;
+  border-left: 3px solid #5470c6;
+}
+
+.stat-card {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure charts are responsive */
+.echarts-for-react {
+  width: 100% !important;
+}
