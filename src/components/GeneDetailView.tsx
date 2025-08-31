@@ -108,6 +108,50 @@ export function GeneDetailView({ gene, allGenes }: GeneDetailViewProps) {
               </Text>
             </Paper>
           </SimpleGrid>
+
+          {/* External Links */}
+          <Paper p="md" withBorder radius="md" className="external-links-panel">
+            <Text size="sm" fw={600} mb="sm" ta="center">
+              External Resources
+            </Text>
+            <Group spacing="sm" position="center">
+              <Badge
+                component="a"
+                href={`https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=${gene.ensembl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outline"
+                color="blue"
+                style={{ cursor: 'pointer' }}
+              >
+                View in Ensembl
+              </Badge>
+              {gene.geneSymbol && (
+                <Badge
+                  component="a"
+                  href={`https://www.genecards.org/cgi-bin/carddisp.pl?gene=${gene.geneSymbol}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="outline"
+                  color="green"
+                  style={{ cursor: 'pointer' }}
+                >
+                  View in GeneCards
+                </Badge>
+              )}
+              <Badge
+                component="a"
+                href={`https://www.ncbi.nlm.nih.gov/gene/?term=${gene.ensembl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outline"
+                color="orange"
+                style={{ cursor: 'pointer' }}
+              >
+                View in NCBI
+              </Badge>
+            </Group>
+          </Paper>
         </Stack>
       </Card>
 
