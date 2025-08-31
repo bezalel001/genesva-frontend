@@ -69,7 +69,10 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
         accessorKey: 'geneSymbol',
         header: 'Gene Symbol',
         size: 150,
-        Cell: ({ cell }) => cell.getValue() || '—',
+        Cell: ({ cell }) => {
+          const value = cell.getValue() as string | null;
+          return <Text>{value || '—'}</Text>;
+        },
       },
       {
         accessorKey: 'name',
@@ -108,7 +111,7 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
         Cell: ({ cell }) => {
           const chr = String(cell.getValue());
           return (
-            <Group gap="xs">
+            <Group spacing="xs">
               <ColorSwatch color={CHROMOSOME_COLORS[chr] || '#666'} size={20} />
               <Text fw={500}>{chr}</Text>
             </Group>
