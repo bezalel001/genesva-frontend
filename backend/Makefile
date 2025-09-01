@@ -1,4 +1,4 @@
-.PHONY: help install dev run build clean lint format typecheck test docker-up docker-down docker-build db-init
+.PHONY: help install dev run build clean lint format typecheck test docker-up docker-down docker-build db-init seed-data
 
 help:
 	@echo "Available commands:"
@@ -15,6 +15,7 @@ help:
 	@echo "  docker-down - Stop Docker services"
 	@echo "  docker-build- Build Docker images"
 	@echo "  db-init     - Initialize database tables"
+	@echo "  seed-data   - Import gene data from CSV"
 	@echo "  precommit   - Run pre-commit on all files"
 
 install:
@@ -60,6 +61,9 @@ docker-build:
 
 db-init:
 	docker-compose run --rm backend uv run python -m app.core.init_db
+
+seed-data:
+	docker-compose run --rm backend uv run python app/scripts/import_genes.py data/genes_human.csv
 
 precommit:
 	uv run pre-commit run --all-files
