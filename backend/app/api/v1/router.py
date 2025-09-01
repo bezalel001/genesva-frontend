@@ -1,0 +1,8 @@
+from fastapi import APIRouter
+
+api_router = APIRouter()
+
+
+@api_router.get("/test")
+def test_endpoint():
+    return {"message": "API is working!"}
