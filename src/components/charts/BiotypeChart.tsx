@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Card, useMantineTheme } from '@mantine/core';
 import ReactECharts from 'echarts-for-react';
 import type { Gene } from '../../types/gene.types';
@@ -8,7 +8,7 @@ interface BiotypeChartProps {
   allGenes: Gene[];
 }
 
-export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
+export const BiotypeChart = React.memo(function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
   // Use Mantine theme to detect dark mode
   const theme = useMantineTheme();
   const isDarkMode = theme.colorScheme === 'dark';
@@ -83,4 +83,4 @@ export function BiotypeChart({ gene, allGenes }: BiotypeChartProps) {
       />
     </Card>
   );
-}
+});

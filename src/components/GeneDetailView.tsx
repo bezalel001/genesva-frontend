@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Card,
   Title,
@@ -19,7 +20,7 @@ interface GeneDetailViewProps {
   allGenes: Gene[];
 }
 
-export function GeneDetailView({ gene, allGenes }: GeneDetailViewProps) {
+export const GeneDetailView = React.memo(function GeneDetailView({ gene, allGenes }: GeneDetailViewProps) {
   // Show empty state if no gene selected
   if (!gene) {
     return (
@@ -162,6 +163,6 @@ export function GeneDetailView({ gene, allGenes }: GeneDetailViewProps) {
       </SimpleGrid>
     </Stack>
   );
-}
+});
 
 export default GeneDetailView;

@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -53,7 +53,7 @@ const getBiotypeColor = (biotype: string): string => {
   return biotypeColors[biotype] || 'gray';
 };
 
-export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
+export const GeneTable = React.memo(function GeneTable({ genes, onRowSelect }: GeneTableProps) {
   // Use proper row selection state
   const [rowSelection, setRowSelection] = useState<MRT_RowSelectionState>({});
   const [selectedGeneId, setSelectedGeneId] = useState<string | null>(null);
@@ -236,4 +236,4 @@ export function GeneTable({ genes, onRowSelect }: GeneTableProps) {
   });
 
   return <MantineReactTable table={table} />;
-}
+});

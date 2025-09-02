@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Card, useMantineTheme } from '@mantine/core';
 import ReactECharts from 'echarts-for-react';
 import type { Gene } from '../../types/gene.types';
@@ -8,7 +8,7 @@ interface ChromosomeChartProps {
   allGenes: Gene[];
 }
 
-export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
+export const ChromosomeChart = React.memo(function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
   // Use Mantine theme to detect dark mode
   const theme = useMantineTheme();
   const isDarkMode = theme.colorScheme === 'dark';
@@ -97,4 +97,4 @@ export function ChromosomeChart({ gene, allGenes }: ChromosomeChartProps) {
       />
     </Card>
   );
-}
+});

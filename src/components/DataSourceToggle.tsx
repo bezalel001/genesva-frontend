@@ -14,7 +14,7 @@ interface DataSourceStatus {
   available: Record<DataSourceType, boolean>;
 }
 
-export const DataSourceToggle: React.FC<DataSourceToggleProps> = ({
+export const DataSourceToggle: React.FC<DataSourceToggleProps> = React.memo(({
   onDataSourceChange,
   className = '',
 }) => {
@@ -125,6 +125,6 @@ export const DataSourceToggle: React.FC<DataSourceToggleProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default DataSourceToggle;
