@@ -238,7 +238,7 @@ CORS_ORIGINS=["http://localhost:3000", "http://localhost:5173"]
 
 The `docker-compose.yml` provides:
 
-- **PostgreSQL 15** database on port 5432
+- **PostgreSQL 16** database on port 5432
 - **Persistent data** storage in Docker volume
 - **Development-friendly** configuration
 
