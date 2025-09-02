@@ -75,19 +75,19 @@ function App() {
   return (
     <>
       <h1>Genes Data</h1>
-      <div className="data-source-indicator">
-        <span className="data-source-indicator-text">
-          📊 <strong>Data Source:</strong> {currentSource || 'Loading...'}
-          {genes.length > 0 &&
-            ` • ${genes.length.toLocaleString()} genes loaded`}
-        </span>
-        <button onClick={refreshData} className="data-source-refresh-btn">
-          🔄 Refresh
-        </button>
-      </div>
-      <DataSourceToggle onDataSourceChange={handleDataSourceChange} />
       <Layout>
         <Container fluid>
+          <div className="data-source-indicator">
+            <span className="data-source-indicator-text">
+              📊 <strong>Data Source:</strong> {currentSource || 'Loading...'}
+              {genes.length > 0 &&
+                ` • ${genes.length.toLocaleString()} genes loaded`}
+            </span>
+            <button onClick={refreshData} className="data-source-refresh-btn">
+              🔄 Refresh
+            </button>
+          </div>
+          <DataSourceToggle onDataSourceChange={handleDataSourceChange} />
           <Grid>
             <Grid.Col span={12} lg={7}>
               <GeneTable genes={genes} onRowSelect={setSelectedGene} />
